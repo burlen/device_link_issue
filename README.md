@@ -1,12 +1,27 @@
 ## CMake should pass `-fvisibility=hidden` during device linking.
 
+this project reproduces a bug when linking shared and static libraries that use CUDA into an executable.
 
+### libraries and executables:
+```
+submod : a static library containing a mix of C++ and CUDA code
+core : a static library containing a mix of C++ and CUDA code
+extension : a **shared** library containing only C++ code. this must be shared and compiled separately.
+public: a static library that conatins the management code for calling using core and extension
+exec : a simple command line executable program that calls functions in the library
+```
+### dependencies
+```
+core depends on: submod
+extension depends on: core
+public depends on: core and extension
+exec depends on: public
+```
 
-this project reproduces a bug when linking shared and static libraries that use CUDA into an executbale.
 If all the libraries are shared libraries there is not issue, but if the libraries are both shared and static libraries then the code errors or crashes at runtime.
 
 
-explicitly adding `-fvisibility=hidden` during device linking fixes the issue. The bug is that CMake should pass this flag during deviuce linking.
+explicitly adding `-fvisibility=hidden` during device linking fixes the issue. The bug is that CMake should pass this flag during device linking.
 Setting `CMAKE_CUDA_VISIBILITY_PRESET hidden` should result in the `-fvisibility=hidden` option being passed in the device linking step.
 
 in this reproducer the bug manifests itself as "invalid device function" when invoking CUDA kernels in the libraries.
@@ -25,7 +40,7 @@ rm -rfI ./*; cmake -DBUILD_SHARED_LIBS=OFF ..
 make VERBOSE=1
 ./test/exec
 ```
-this conpiles such that all but one of the internal libraries are static and the one is shared.
+this compiles such that all but one of the internal libraries are static and the one is shared.
 the run will error out with "invlaid device function" error.
 
 Explicitly adding `target_link_options(${TGT_NAME} PRIVATE $<DEVICE_LINK:-fvisibility=hidden>)` on line 83 of the CMakeLists.txt file resolves the issue and the code runs correctly without error.
