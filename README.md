@@ -1,15 +1,18 @@
+## CMake should pass `-fvisibility=hidden` during device linking.
+
+
 
 this project reproduces a bug when linking shared and static libraries that use CUDA into an executbale.
 If all the libraries are shared libraries there is not issue, but if the libraries are both shared and static libraries then the code errors or crashes at runtime.
 
 
 explicitly adding `-fvisibility=hidden` during device linking fixes the issue. The bug is that CMake should pass this flag during deviuce linking.
-Adding `CMAKE_CUDA_VISIBILITY_PRESET` hidden should `CUDA_VISIBILITY_HIDDEN` include the `-fvisibility=hidden` in the device linking step.
+Setting `CMAKE_CUDA_VISIBILITY_PRESET hidden` should result in the `-fvisibility=hidden` option being passed in the device linking step.
 
 in this reproducer the bug manifests itself as "invalid device function" when invoking CUDA kernels in the libraries.
 the reproducer is structured to mimic a real world project that was experiencing a SEGV before main during CUDA library initialization.
 
-CMake should pass `-fvisibility=hidden` during device linking.
+
 
 
 To demonstrate the issue:
