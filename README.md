@@ -28,10 +28,10 @@ make VERBOSE=1
 this conpiles such that all but one of the internal libraries are static and the one is shared.
 the run will error out with "invlaid device function" error.
 
-Explicitly adding `target_link_options(${TGT_NAME} PRIVATE $<DEVICE_LINK:-fvisibility=hidden>)` on line 83 of the CMakeLists.txt file resolves the issue.
+Explicitly adding `target_link_options(${TGT_NAME} PRIVATE $<DEVICE_LINK:-fvisibility=hidden>)` on line 83 of the CMakeLists.txt file resolves the issue and the code runs correctly without error.
 
 
-System Details:
+## System Details:
 ```
 cmake version 3.22.2
 
