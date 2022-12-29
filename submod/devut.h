@@ -3,6 +3,7 @@
 
 #include "devut_config.h"
 #include <iostream>
+#include <cstdlib>
 
 #if defined(__CUDACC__)
 
@@ -23,6 +24,7 @@ inline __device__ size_t index()
     { \
         std::cerr << "ERROR: [" << __FILE__ << ":" << __LINE__ << "]" << std::endl \
             << cudaGetErrorString(ierr) << std::endl; \
+        abort(); \
     } \
 }
 #endif

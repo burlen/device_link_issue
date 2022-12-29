@@ -14,7 +14,13 @@ CMake should pass `-fvisibility=hidden` during device linking.
 
 To demonstrate the issue:
 ```
-rm -rfI ./*; cmake -DBUILD_SHARED_LIBS=OFF ..; make VERBOSE=1  ; ./test/exec
+git clone git@github.com:burlen/device_link_issue.git
+cd device_link_issue
+mkdir bin
+cd bin
+rm -rfI ./*; cmake -DBUILD_SHARED_LIBS=OFF ..
+make VERBOSE=1
+./test/exec
 ```
 this conpiles such that all but one of the internal libraries are static and the one is shared.
 the run will error out with "invlaid device function" error.

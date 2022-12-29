@@ -8,7 +8,6 @@
 #include <cstdlib>
 
 
-#ifdef __CUDACC__
 #include <cuda.h>
 #include <cuda_runtime.h>
 
@@ -45,7 +44,6 @@ void div_2(const double *a , const double *b, double *c, size_t n)
     cudaFree(devb);
     cudaFree(devc);
 }
-#endif
 
 
 
@@ -62,11 +60,9 @@ int main(int, char **)
   add(a.data(), b.data(), c.data(), n);
   mul(c.data(), b.data(), c.data(), n);
 
-#if defined(__CUDACC__)
   div_2(a.data(), c.data(), c.data(), n);
-#endif
 
-  std::cerr << "c = ";
+  std::cerr << "2 / ((2 + 2) * 2)  = ";
   for (size_t i =0; i < n; ++i)
       std::cerr << c[i] << ", ";
   std::cerr << std::endl;
